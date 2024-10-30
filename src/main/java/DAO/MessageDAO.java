@@ -44,14 +44,7 @@ public class MessageDAO {
         }
         return false;
     }
-
-    //## 4: Our API should be able to retrieve all messages.
-
-//As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/messages.
-
-//- The response body should contain a JSON representation of a list containing all messages retrieved from the database. 
-//It is expected for the list to simply be empty if there are no messages. The response status should always be 200, which is the default.
-
+    //Get all messages
     public List<Message> getAllMesssages(){
         Connection connection = ConnectionUtil.getConnection();
         List<Message> messages = new ArrayList<>();
@@ -67,5 +60,29 @@ public class MessageDAO {
           System.out.print(e.getMessage());
         }
         return messages;
-}
+    }
+    //## 5: Our API should be able to retrieve a message by its ID.
+
+//As a user, I should be able to submit a GET request on the endpoint GET localhost:8080/messages/{message_id}.
+
+//- The response body should contain a JSON representation of the message identified by the message_id. 
+//It is expected for the response body to simply be empty if there is no such message. 
+//The response status should always be 200, which is the default.
+    //Get message by id
+    public Message getMessageById(int messageid){
+        Connection connection = ConnectionUtil.getConnection();
+        try{
+            String sql = "SELECT * FROM message WHERE message_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, messageid);
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Message message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"), rs.getString("message_text"), rs.getLong("time_posted_epoch"));
+                return message;
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
 }
