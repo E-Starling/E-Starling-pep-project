@@ -31,4 +31,13 @@ public class AccountService {
 
         return accountDAO.insertAccount(account);
     }
+
+    //Login account
+    public Account loginAccount(Account account){
+        //if (accountDAO.loginAccount(account.getAccount_id()) == null){
+            //accountDAO.loginAccount(account);
+            
+        return accountDAO.loginAccount(account);
+       // }else return null;
+    }
 }
