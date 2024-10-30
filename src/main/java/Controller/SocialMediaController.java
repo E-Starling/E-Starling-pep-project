@@ -1,5 +1,7 @@
 package Controller;
 
+import javax.sound.midi.ControllerEventListener;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -9,7 +11,7 @@ import Service.AccountService;
 import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-
+import java.util.List;
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
@@ -33,6 +35,7 @@ public class SocialMediaController {
         app.post("/register", this::postAccountHandler);
         app.post("/login", this::postAccountLogin);
         app.post("/messages", this::postMessage);
+        app.get("/messages", this::getAllMessages);
         return app;
     }
 
@@ -81,5 +84,11 @@ public class SocialMediaController {
         } catch (IllegalArgumentException e){
             ctx.status(400).json("");
         }
+    }
+
+    //Get all messages
+    public void getAllMessages(Context ctx){
+        List<Message> messages = messageService.getAllMessages();
+        ctx.json(messages);
     }
 }

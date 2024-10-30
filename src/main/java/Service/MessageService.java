@@ -18,14 +18,7 @@ public class MessageService {
         this.messageDAO = messageDAO;
      }
      //Create message
-
-     //- The creation of the message will be successful if and only if the message_text is not blank, 
-//is not over 255 characters, and posted_by refers to a real, existing user. If successful, 
-//the response body should contain a JSON of the message, including its message_id. 
-//The response status should be 200, which is the default. The new message should be persisted to the database.
-//- If the creation of the message is not successful, the response status should be 400. (Client error)
      public Message addMessage(Message message){
-       
         //check blank
          if (message.getMessage_text() == null || message.getMessage_text().trim().isEmpty()){
             throw new IllegalArgumentException();
@@ -39,9 +32,10 @@ public class MessageService {
             throw new IllegalArgumentException();
         }
         return messageDAO.insertMessage(message);
-     
+    }
+
+    //Get All messages
+    public List<Message> getAllMessages() {
+        return messageDAO.getAllMesssages();
     }
 }
-//if (!accountDAO.accountIDExists(message.getPosted_by())) {
-  //  throw new IllegalArgumentException();
-//}
