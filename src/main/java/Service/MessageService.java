@@ -1,12 +1,14 @@
 package Service;
 
 import DAO.MessageDAO;
+import DAO.AccountDAO;
 import Model.Message;
 
 import java.util.List;
 
 public class MessageService {
      private MessageDAO messageDAO;
+     private AccountDAO accountDAO;
 
      public MessageService(){
         messageDAO = new MessageDAO();
@@ -23,7 +25,8 @@ public class MessageService {
 //The response status should be 200, which is the default. The new message should be persisted to the database.
 //- If the creation of the message is not successful, the response status should be 400. (Client error)
      public Message addMessage(Message message){
-         //check blank
+       
+        //check blank
          if (message.getMessage_text() == null || message.getMessage_text().trim().isEmpty()){
             throw new IllegalArgumentException();
         }
@@ -32,11 +35,13 @@ public class MessageService {
             throw new IllegalArgumentException();
         }
         //check posted_by is real
-        if (message.getPosted_by() <= 0) {
+        if (!messageDAO.accountIDExists(message.getPosted_by())){
             throw new IllegalArgumentException();
         }
-
         return messageDAO.insertMessage(message);
-     }
-
+     
+    }
 }
+//if (!accountDAO.accountIDExists(message.getPosted_by())) {
+  //  throw new IllegalArgumentException();
+//}

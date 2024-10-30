@@ -28,16 +28,11 @@ public class AccountService {
         if (accountDAO.usernameExists(account.getUsername())) {
             throw new IllegalArgumentException();
         }
-
         return accountDAO.insertAccount(account);
     }
 
     //Login account
-    public Account loginAccount(Account account){
-        //if (accountDAO.loginAccount(account.getAccount_id()) == null){
-            //accountDAO.loginAccount(account);
-            
+    public Account loginAccount(Account account){     
         return accountDAO.loginAccount(account);
-       // }else return null;
     }
 }

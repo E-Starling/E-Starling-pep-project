@@ -1,5 +1,6 @@
 package DAO;
 
+import Model.Account;
 import Model.Message;
 import Util.ConnectionUtil;
 import java.sql.*;
@@ -24,17 +25,36 @@ public class MessageDAO {
     public Message insertMessage(Message message){
         Connection connection = ConnectionUtil.getConnection();
         try{
-            String sql = "INSERT INTO message(posted_by,message_text,time_posted_epoch) VALUES(?,?,?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            String sql = "INSERT INTO message(posted_by, message_text, time_posted_epoch) VALUES(?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             preparedStatement.setInt(1, message.getPosted_by());
             preparedStatement.setString(2, message.getMessage_text()); 
             preparedStatement.setLong(3, message.getTime_posted_epoch()); 
             preparedStatement.executeUpdate(); 
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
+             if(pkeyResultSet.next()){          
+                int genarated_message_id = (int) pkeyResultSet.getLong(1);
+                return new Message(genarated_message_id, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());           
+            }
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public boolean accountIDExists(int accountID) {
+        Connection connection = ConnectionUtil.getConnection();
+        String sql = "SELECT COUNT(*) FROM account WHERE account_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, accountID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
