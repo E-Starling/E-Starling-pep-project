@@ -37,6 +37,8 @@ public class SocialMediaController {
         app.post("/messages", this::postMessage);
         app.get("/messages", this::getAllMessages);
         app.get("/messages/{message_id}", this::getMessageById);
+        app.delete("/messages/{message_id}", this::deleteMessageById);
+        app.patch("/messages/{message_id}", this::updateMessageById);
         return app;
     }
 
@@ -95,11 +97,43 @@ public class SocialMediaController {
 
     //Get message by Id
     public void getMessageById(Context ctx){
-        
-        
-        //int messageId = Integer.parseInt(ctx.pathParam("id"));
-        
-        Message message = messageService.getMessageById(0);
-        ctx.json(message);
-    
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+        Message messageToRetrieve = new Message();
+
+        messageToRetrieve.setMessage_id(messageId); 
+        Message message = messageService.getMessageById(messageToRetrieve);
+        if (message != null){
+            ctx.json(message);
+        }else{
+            ctx.json("");
+        }
+    }
+
+    //Delete Message by Id
+    public void deleteMessageById(Context ctx){
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));     
+        Message messageToDelete = new Message();
+
+        messageToDelete.setMessage_id(messageId);
+        Message deletedMessage = messageService.deleteMessageById(messageToDelete);     
+        if (deletedMessage != null) {
+            ctx.json(deletedMessage);
+        } else {
+            ctx.json("");
+        }
+    }
+
+    //Update Message by Id
+    public void updateMessageById(Context ctx){
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));     
+        Message messageToUpdate = new Message();
+        messageToUpdate.setMessage_id(messageId);
+       
+            Message updatedMessage = messageService.deleteMessageById(messageToUpdate);   
+            if (updatedMessage != null) {
+                ctx.json(updatedMessage);
+            } else {
+                ctx.status(400).json("");
+            }
+    }
 }

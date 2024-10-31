@@ -40,7 +40,25 @@ public class MessageService {
     }
 
     //Get message by id
-    public Message getMessageById(int getMessageById){
-        return messageDAO.getMessageById(getMessageById);
+    public Message getMessageById(Message message){
+        return messageDAO.getMessageById(message.getMessage_id());
+    }
+
+    //Delete Message By Id
+    public Message deleteMessageById(Message message){
+        return messageDAO.deleteMessageById(message.getMessage_id());
+    }
+
+    //Update Message by Id
+    public Message updateMessageById(Message message){
+        //check blank
+        if (message.getMessage_text() == null || message.getMessage_text().trim().isEmpty()){
+            throw new IllegalArgumentException();
+        }
+        //check over 255 char
+        if (message.getMessage_text().length() > 255){
+            throw new IllegalArgumentException();
+        }
+        return messageDAO.updateMessageById(message.getMessage_id());
     }
 }
