@@ -27,6 +27,7 @@ public class AccountDAO {
         }
         return null;
     }
+    
     //Check if username is taken
     public boolean usernameExists(String username) {
         Connection connection = ConnectionUtil.getConnection();
@@ -42,6 +43,7 @@ public class AccountDAO {
         }
         return false;
     }
+
     //Login Account
     public Account loginAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
@@ -60,5 +62,4 @@ public class AccountDAO {
         }
         return null;
     }
-    
 }

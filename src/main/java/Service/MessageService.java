@@ -17,6 +17,7 @@ public class MessageService {
      public MessageService(MessageDAO messageDAO){
         this.messageDAO = messageDAO;
      }
+     
      //Create message
      public Message addMessage(Message message){
         //check blank
@@ -59,6 +60,11 @@ public class MessageService {
         if (message.getMessage_text().length() > 255){
             throw new IllegalArgumentException();
         }
-        return messageDAO.updateMessageById(message.getMessage_id());
+        return messageDAO.updateMessageById(message);
+    }
+
+    //Get messages by account
+    public List<Message> getAllMessageByAccount(Message message){
+        return messageDAO.getAllMesssagesByAccount(message.getPosted_by());
     }
 }

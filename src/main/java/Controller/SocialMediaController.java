@@ -39,6 +39,7 @@ public class SocialMediaController {
         app.get("/messages/{message_id}", this::getMessageById);
         app.delete("/messages/{message_id}", this::deleteMessageById);
         app.patch("/messages/{message_id}", this::updateMessageById);
+        app.get("/accounts/{account_id}/messages", this::getAllMessagesByAccount);
         return app;
     }
 
@@ -124,16 +125,38 @@ public class SocialMediaController {
     }
 
     //Update Message by Id
-    public void updateMessageById(Context ctx){
-        int messageId = Integer.parseInt(ctx.pathParam("message_id"));     
+    public void updateMessageById(Context ctx)throws JsonProcessingException{
+        int messageId = Integer.parseInt(ctx.pathParam("message_id"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
         Message messageToUpdate = new Message();
         messageToUpdate.setMessage_id(messageId);
-       
-            Message updatedMessage = messageService.deleteMessageById(messageToUpdate);   
+
+        try {
+
+            Message inputMessage = objectMapper.readValue(ctx.body(), Message.class);
+            String newMessageText = inputMessage.getMessage_text();
+
+            messageToUpdate.setMessage_text(newMessageText);
+
+            Message updatedMessage = messageService.updateMessageById(messageToUpdate); 
             if (updatedMessage != null) {
                 ctx.json(updatedMessage);
             } else {
                 ctx.status(400).json("");
             }
+        } catch (IllegalArgumentException e){
+            ctx.status(400).json("");
+        }
+    }
+    
+    //Get all messages by account
+    public void getAllMessagesByAccount(Context ctx){
+        int accountId = Integer.parseInt(ctx.pathParam("account_id"));
+        Message messagesToRetrieve = new Message();
+        messagesToRetrieve.setPosted_by(accountId); 
+        List<Message> messages = messageService.getAllMessageByAccount(messagesToRetrieve);
+        ctx.json(messages);
     }
 }
+
